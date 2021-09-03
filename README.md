@@ -1,5 +1,7 @@
 # Ergo SDK
 
+[![npm module](https://badge.fury.io/js/ergo-sdk.svg)](https://www.npmjs.org/package/ergo-sdk)
+
 This SDK includes:
 * Ergo protocol data model
 * Ergo wallet
