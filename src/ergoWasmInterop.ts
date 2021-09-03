@@ -7,7 +7,7 @@ import {ErgoBoxCandidate} from "./entities/ergoBoxCandidate"
 import {BoxId, TxId} from "./types"
 import {TxRequest} from "./wallet/entities/txRequest"
 import {NetworkContext} from "./entities/networkContext"
-import {RustModule} from "./utils/rustLoader";
+import {RustModule} from "./utils/rustLoader"
 
 export function txRequestToWasmTransaction(req: TxRequest, ctx: NetworkContext): wasm.UnsignedTransaction {
   const inputs = boxSelectionToWasm(req.inputs)
@@ -51,7 +51,9 @@ export function boxCandidatesToWasm(boxes: ErgoBoxCandidate[]): wasm.ErgoBoxCand
 }
 
 export function boxCandidateToWasm(box: ErgoBoxCandidate): wasm.ErgoBoxCandidate {
-  const value = RustModule.SigmaRust.BoxValue.from_i64(RustModule.SigmaRust.I64.from_str(box.value.toString()))
+  const value = RustModule.SigmaRust.BoxValue.from_i64(
+    RustModule.SigmaRust.I64.from_str(box.value.toString())
+  )
   const contract = RustModule.SigmaRust.Contract.pay_to_address(
     RustModule.SigmaRust.Address.recreate_from_ergo_tree(ergoTreeToWasm(box.ergoTree))
   )
@@ -72,7 +74,9 @@ export function computeBoxId(box: ErgoBoxCandidate, txId: TxId, idx: number): Bo
 }
 
 export function boxCandidateToWasmBox(box: ErgoBoxCandidate, txId: TxId, idx: number): wasm.ErgoBox {
-  const value = RustModule.SigmaRust.BoxValue.from_i64(RustModule.SigmaRust.I64.from_str(box.value.toString()))
+  const value = RustModule.SigmaRust.BoxValue.from_i64(
+    RustModule.SigmaRust.I64.from_str(box.value.toString())
+  )
   const contract = RustModule.SigmaRust.Contract.pay_to_address(
     RustModule.SigmaRust.Address.recreate_from_ergo_tree(ergoTreeToWasm(box.ergoTree))
   )
@@ -86,7 +90,9 @@ export function registerIdToWasm(id: string): number {
 }
 
 export function boxToWasm(box: ErgoBox): wasm.ErgoBox {
-  const value = RustModule.SigmaRust.BoxValue.from_i64(RustModule.SigmaRust.I64.from_str(box.value.toString()))
+  const value = RustModule.SigmaRust.BoxValue.from_i64(
+    RustModule.SigmaRust.I64.from_str(box.value.toString())
+  )
   const contract = RustModule.SigmaRust.Contract.pay_to_address(
     RustModule.SigmaRust.Address.recreate_from_ergo_tree(ergoTreeToWasm(box.ergoTree))
   )

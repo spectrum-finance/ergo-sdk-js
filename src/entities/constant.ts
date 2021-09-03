@@ -1,6 +1,6 @@
 import {HexString} from "../types"
 import * as wasm from "ergo-lib-wasm-browser"
-import {RustModule} from "../utils/rustLoader";
+import {RustModule} from "../utils/rustLoader"
 
 export class Int32Constant {
   constructor(public readonly value: number) {}

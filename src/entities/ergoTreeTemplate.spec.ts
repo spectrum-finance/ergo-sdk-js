@@ -1,6 +1,6 @@
 import test from "ava"
 import {treeTemplateFromErgoTree} from "./ergoTreeTemplate"
-import {RustModule} from "../utils/rustLoader";
+import {RustModule} from "../utils/rustLoader"
 
 test.before(async () => {
   await RustModule.load(true)

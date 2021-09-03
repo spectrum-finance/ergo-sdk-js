@@ -2,7 +2,7 @@ import test from "ava"
 
 import * as wasm from "./ergoWasmInterop"
 import {boxes} from "./samples"
-import {RustModule} from "./utils/rustLoader";
+import {RustModule} from "./utils/rustLoader"
 
 test.before(async () => {
   await RustModule.load(true)
