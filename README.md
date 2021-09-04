@@ -1,6 +1,6 @@
 # Ergo SDK
 
-[![npm module](https://badge.fury.io/js/ergo-sdk.svg)](https://www.npmjs.org/package/ergo-sdk)
+[![npm version](https://badge.fury.io/js/@ergolabs%2Fergo-sdk.svg)](https://badge.fury.io/js/@ergolabs%2Fergo-sdk)
 
 This SDK includes:
 * Ergo protocol data model
