@@ -1,6 +1,6 @@
 {
   "name": "@ergolabs/ergo-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ergo SDK",
   "main": "build/module/index.js",
   "typings": "build/module/index.d.ts",
