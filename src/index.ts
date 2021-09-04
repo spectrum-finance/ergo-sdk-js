@@ -59,6 +59,7 @@ export {
   deserializeConstant
 } from "./entities/constant"
 export {TxId, BoxId, TokenId, HexString, NErg, Base58String} from "./types"
+export {InsufficientInputs} from "./errors/insufficientInputs"
 
 export {ErgoNetwork, Explorer} from "./network/ergoNetwork"
 export {Paging} from "./network/paging"
