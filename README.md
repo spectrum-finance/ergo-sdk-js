@@ -86,3 +86,7 @@ const explorer = new Explorer("https://api.ergoplatform.com");
 const txId = "18b30e9b40ed7061d2f87590c555d24a712df9c848a8db9dfd4affcc92d3cb02";
 explorer.getTx(txId).then(tx => console.log(tx));
 ```
+
+### Using with `create-react-app`
+CRA does not support WASM. But you can workaround it. You need to override webpack config. Check out -
+https://stackoverflow.com/questions/59319775/how-to-use-webassembly-wasm-with-create-react-app/59720645#59720645
