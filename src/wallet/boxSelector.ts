@@ -4,7 +4,7 @@ import {BoxSelection} from "./entities/boxSelection"
 import {InsufficientInputs} from "../errors/insufficientInputs"
 import {TokenId} from "../types"
 import {TokenAmount} from "../entities/tokenAmount"
-import * as R from "ramda"
+import R from "ramda"
 
 export interface BoxSelector {
   /** Selects inputs to satisfy target balance and tokens.

@@ -1,15 +1,14 @@
 {
   "name": "@ergolabs/ergo-sdk",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Ergo SDK",
-  "main": "build/module/index.js",
-  "typings": "build/module/index.d.ts",
-  "module": "build/module/index.js",
+  "main": "build/main/index.js",
+  "typings": "build/main/index.d.ts",
+  "module": "build/main/index.js",
   "keywords": [],
   "scripts": {
     "build": "run-p build:*",
     "build:main": "tsc -p tsconfig.json",
-    "build:module": "tsc -p tsconfig.module.json",
     "build+test:unit": "run-p build:* && nyc --silent ava",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
@@ -52,7 +51,11 @@
     "ramda": "0.27.1"
   },
   "devDependencies": {
+    "@ava/babel": "^2.0.0",
     "@ava/typescript": "^1.1.1",
+    "@babel/plugin-proposal-optional-chaining": "^7.14.5",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.15.6",
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/bs58": "^4.0.1",
     "@types/crypto-js": "^4.0.1",
@@ -70,6 +73,7 @@
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-functional": "^3.0.2",
     "eslint-plugin-import": "^2.22.0",
+    "esm": "^3.2.25",
     "gh-pages": "^3.1.0",
     "npm-run-all": "^4.1.5",
     "nyc": "^15.1.0",
@@ -97,9 +101,18 @@
         "src/": "build/main/"
       }
     },
-    "files": [
-      "!build/module/**"
-    ]
+    "require": [
+      "esm",
+      "@babel/polyfill"
+    ],
+    "babel": {
+      "testOptions": {
+        "plugins": ["@babel/plugin-syntax-optional-chaining"],
+        "presets": [
+          "@babel/preset-env"
+        ]
+      }
+    }
   },
   "config": {
     "commitizen": {
