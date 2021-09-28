@@ -1,6 +1,6 @@
 {
   "name": "@ergolabs/ergo-sdk",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Ergo SDK",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -105,14 +105,7 @@
       "esm",
       "@babel/polyfill"
     ],
-    "babel": {
-      "testOptions": {
-        "plugins": ["@babel/plugin-syntax-optional-chaining"],
-        "presets": [
-          "@babel/preset-env"
-        ]
-      }
-    }
+    "babel": true
   },
   "config": {
     "commitizen": {
