@@ -1,5 +1,5 @@
 import {HexString} from "../types"
-import * as wasm from "ergo-lib-wasm-browser"
+import {Constant as WasmConstant} from "ergo-lib-wasm-browser"
 import {RustModule} from "../utils/rustLoader"
 
 export class Int32Constant {
@@ -17,7 +17,7 @@ export class ByteaConstant {
 export type Constant = Int32Constant | Int64Constant | ByteaConstant
 
 export function serializeConstant(c: Constant): HexString {
-  let constant: wasm.Constant
+  let constant: WasmConstant
   if (c instanceof Int32Constant) constant = RustModule.SigmaRust.Constant.from_i32(c.value)
   else if (c instanceof Int64Constant)
     constant = RustModule.SigmaRust.Constant.from_i64(RustModule.SigmaRust.I64.from_str(c.value.toString()))
