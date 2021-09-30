@@ -13,7 +13,7 @@ This SDK heavily relies on `ergo-rust` via WASM. So you have to load `RustModule
 ```typescript jsx
 import React, { useEffect, useState } from 'react';
 import { GeistProvider } from '@geist-ui/react';
-import { RustModule } from 'ergo-sdk';
+import { RustModule } from '@ergolabs/ergo-sdk';
 
 export const App: React.FC = () => {
   const [isRustModuleLoaded, setIsRustModuleLoaded] = useState(false);
@@ -81,7 +81,7 @@ Implemented methods:
 * `getNetworkContext(): Promise<NetworkContext>` - Get current network context.
 
 ```typescript
-import {Explorer} from "ergo-sdk";
+import {Explorer} from "@ergolabs/ergo-sdk";
 const explorer = new Explorer("https://api.ergoplatform.com");
 const txId = "18b30e9b40ed7061d2f87590c555d24a712df9c848a8db9dfd4affcc92d3cb02";
 explorer.getTx(txId).then(tx => console.log(tx));
