@@ -2,6 +2,7 @@ import axios, {AxiosInstance} from "axios"
 import {Address, BoxId, ErgoTree, HexString, TokenId, TxId} from "../"
 import {NetworkContext} from "../entities/networkContext"
 import * as network from "../network/models"
+import {TokenSymbol} from "../types"
 import {JSONBI} from "../utils/json"
 import {
   AugAssetInfo,
@@ -73,6 +74,10 @@ export interface ErgoNetwork {
   /** Get a token info by id.
    */
   getFullTokenInfo(tokenId: TokenId): Promise<AugAssetInfo | undefined>
+
+  /** Get tokens info by TokenSymbol.
+   */
+  getFullTokensInfoBySymbol(tokenSymbol: TokenSymbol): Promise<AugAssetInfo[]>
 
   /** Get all available tokens.
    */
@@ -225,6 +230,15 @@ export class Explorer implements ErgoNetwork {
         transformResponse: data => JSONBI.parse(data)
       })
       .then(res => (res.status != 404 ? fixAssetInfo(res.data) : undefined))
+  }
+
+  async getFullTokensInfoBySymbol(tokenSymbol: TokenSymbol): Promise<AugAssetInfo[]> {
+    return this.backend
+      .request<AugAssetInfo[]>({
+        url: `/api/v1/tokens/bySymbol/${tokenSymbol}`,
+        transformResponse: data => JSONBI.parse(data)
+      })
+      .then(res => res.data.map(a => fixAssetInfo(a)))
   }
 
   async getTokens(paging: Paging): Promise<[AugAssetInfo[], number]> {

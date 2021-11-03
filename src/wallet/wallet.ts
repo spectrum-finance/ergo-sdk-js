@@ -15,4 +15,9 @@ export interface Wallet extends Prover {
    * @param unused - show only unused addresses
    */
   getAddresses(unused: boolean): Promise<Address[]>
+
+  /** Get wallet balance of a given token ID.
+   * @param tokenId - ID of a token
+   */
+  getBalance(tokenId: string): Promise<bigint>
 }
