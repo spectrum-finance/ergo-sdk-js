@@ -1,6 +1,6 @@
 import {BoxId, ErgoBox, HexString, Input, Registers, SigmaType, TokenId, TxId} from "../"
-import {parseRegisterId} from "../entities/registers"
 import {DataInput} from "../entities/dataInput"
+import {parseRegisterId} from "../entities/registers"
 
 export type Items<T> = {
   items: T[]
@@ -36,6 +36,16 @@ export function explorerToInput(ein: ExplorerInput): AugInput {
   }
 }
 
+export type ExplorerErgoBalance = {
+  readonly nErgs: bigint
+  readonly tokens: BoxAsset[]
+}
+
+export type AugErgoBalance = {
+  readonly nErgs: bigint
+  readonly tokens: BoxAsset[]
+}
+
 export type ExplorerErgoTx = {
   readonly id: TxId
   readonly inputs: ExplorerInput[]
@@ -50,6 +60,10 @@ export type AugErgoTx = {
   readonly dataInputs: DataInput[]
   readonly outputs: AugErgoBox[]
   readonly size: number
+}
+
+export function explorerToErgoBalance(balance: ExplorerErgoBalance): AugErgoBalance {
+  return {...balance}
 }
 
 export function explorerToErgoTx(etx: ExplorerErgoTx): AugErgoTx {
@@ -98,9 +112,9 @@ export type BoxAssetsSearch = {
 }
 
 export function explorerToErgoBox(box: ExplorerErgoBox): AugErgoBox {
-  let registers: Registers = {}
+  const registers: Registers = {}
   Object.entries(box.additionalRegisters).forEach(([k, v]) => {
-    let regId = parseRegisterId(k)
+    const regId = parseRegisterId(k)
     if (regId) registers[regId] = v.serializedValue
   })
   return {

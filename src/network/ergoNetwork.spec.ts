@@ -1,7 +1,5 @@
 import test from "ava"
-
 import {RustModule} from "../utils/rustLoader"
-
 import {Explorer} from "./ergoNetwork"
 
 test.before(async () => {
@@ -34,4 +32,8 @@ test("ergoNetwork searchUnspentBoxesByTokensUnion", async t => {
     assets: ["7f14228a5fd5b5c5d74bfbced3491916e2dc305106dd043f78b65b4cced9c2b9"]
   }
   await t.notThrowsAsync(explorer.searchUnspentBoxesByTokensUnion(req, defaultPaging))
+})
+
+test("ergoNetwork getBalanceByAddress", async t => {
+  await t.notThrowsAsync(explorer.getBalanceByAddress("9iKFBBrryPhBYVGDKHuZQW7SuLfuTdUJtTPzecbQ5pQQzD4VykC"))
 })

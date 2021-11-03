@@ -1,22 +1,25 @@
 import axios, {AxiosInstance} from "axios"
-import {ErgoTree, HexString, TokenId, TxId, BoxId, Address} from "../"
-import * as network from "../network/models"
-import {Paging} from "./paging"
+import {Address, BoxId, ErgoTree, HexString, TokenId, TxId} from "../"
 import {NetworkContext} from "../entities/networkContext"
+import * as network from "../network/models"
+import {JSONBI} from "../utils/json"
 import {
+  AugAssetInfo,
+  AugErgoBalance,
   AugErgoBox,
   AugErgoTx,
   BoxAssetsSearch,
   BoxSearch,
+  ExplorerErgoBalance,
   ExplorerErgoBox,
   ExplorerErgoTx,
+  explorerToErgoBalance,
   explorerToErgoBox,
   explorerToErgoTx,
-  fixAssetInfo,
-  AugAssetInfo
+  fixAssetInfo
 } from "./models"
+import {Paging} from "./paging"
 import {Sorting} from "./sorting"
-import {JSONBI} from "../utils/json"
 
 export interface ErgoNetwork {
   /** Get confirmed transaction by id.
@@ -26,6 +29,10 @@ export interface ErgoNetwork {
   /** Get confirmed output by id.
    */
   getOutput(id: BoxId): Promise<AugErgoBox | undefined>
+
+  /** Get balance by address.
+   */
+  getBalanceByAddress(address: Address): Promise<AugErgoBalance | undefined>
 
   /** Get transactions by address.
    */
@@ -103,6 +110,15 @@ export class Explorer implements ErgoNetwork {
         transformResponse: data => JSONBI.parse(data)
       })
       .then(res => explorerToErgoBox(res.data))
+  }
+
+  async getBalanceByAddress(address: Address): Promise<AugErgoBalance | undefined> {
+    return this.backend
+      .request<ExplorerErgoBalance>({
+        url: `/api/v1/addresses/${address}/balance/confirmed`,
+        transformResponse: data => JSONBI.parse(data)
+      })
+      .then(res => explorerToErgoBalance(res.data))
   }
 
   async getTxsByAddress(address: Address, paging: Paging): Promise<[AugErgoTx[], number]> {
