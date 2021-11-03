@@ -30,7 +30,7 @@ export interface ErgoNetwork {
    */
   getOutput(id: BoxId): Promise<AugErgoBox | undefined>
 
-  /** Get balance by address.
+  /** Get confirmed balance by address.
    */
   getBalanceByAddress(address: Address): Promise<AugErgoBalance | undefined>
 
