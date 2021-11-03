@@ -5,12 +5,15 @@ import {Paging} from "./paging"
 import {NetworkContext} from "../entities/networkContext"
 import {
   AugErgoBox,
+  AugErgoBalance,
   AugErgoTx,
   BoxAssetsSearch,
   BoxSearch,
   ExplorerErgoBox,
+  ExplorerErgoBalance,
   ExplorerErgoTx,
   explorerToErgoBox,
+  explorerToErgoBalance,
   explorerToErgoTx,
   fixAssetInfo,
   AugAssetInfo
@@ -27,6 +30,10 @@ export interface ErgoNetwork {
   /** Get confirmed output by id.
    */
   getOutput(id: BoxId): Promise<AugErgoBox | undefined>
+
+  /** Get confirmed balance by address.
+   */
+  getBalanceByAddress(address: Address): Promise<AugErgoBalance | undefined>
 
   /** Get transactions by address.
    */
@@ -108,6 +115,15 @@ export class Explorer implements ErgoNetwork {
         transformResponse: data => JSONBI.parse(data)
       })
       .then(res => explorerToErgoBox(res.data))
+  }
+
+  async getBalanceByAddress(address: Address): Promise<AugErgoBalance | undefined> {
+    return this.backend
+      .request<ExplorerErgoBalance>({
+        url: `/api/v1/addresses/${address}/balance/confirmed`,
+        transformResponse: data => JSONBI.parse(data)
+      })
+      .then(res => explorerToErgoBalance(res.data))
   }
 
   async getTxsByAddress(address: Address, paging: Paging): Promise<[AugErgoTx[], number]> {
