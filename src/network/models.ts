@@ -36,6 +36,20 @@ export function explorerToInput(ein: ExplorerInput): AugInput {
   }
 }
 
+export type ExplorerErgoBalance = {
+  readonly nErgs: bigint
+  readonly tokens: BoxAsset[]
+}
+
+export type AugErgoBalance = {
+  readonly nErgs: bigint
+  readonly tokens: BoxAsset[]
+}
+
+export function explorerToErgoBalance(balance: ExplorerErgoBalance): AugErgoBalance {
+  return {...balance}
+}
+
 export type ExplorerErgoTx = {
   readonly id: TxId
   readonly inputs: ExplorerInput[]

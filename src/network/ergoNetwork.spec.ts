@@ -35,3 +35,7 @@ test("ergoNetwork searchUnspentBoxesByTokensUnion", async t => {
   }
   await t.notThrowsAsync(explorer.searchUnspentBoxesByTokensUnion(req, defaultPaging))
 })
+
+test("ergoNetwork getBalanceByAddress", async t => {
+  await t.notThrowsAsync(explorer.getBalanceByAddress("9iKFBBrryPhBYVGDKHuZQW7SuLfuTdUJtTPzecbQ5pQQzD4VykC"))
+})
