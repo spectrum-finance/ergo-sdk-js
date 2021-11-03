@@ -1,5 +1,5 @@
-import {HexString} from "../types"
 import {Constant as WasmConstant} from "ergo-lib-wasm-browser"
+import {HexString} from "../types"
 import {RustModule} from "../utils/rustLoader"
 
 export class Int32Constant {

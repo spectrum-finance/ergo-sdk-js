@@ -1,9 +1,9 @@
-import {ChangeBox} from "./changeBox"
-import {OverallAmount} from "./overallAmount"
 import {ErgoBox} from "../../entities/ergoBox"
 import {TokenAmount} from "../../entities/tokenAmount"
-import {TokenId} from "../../types"
 import {UnsignedInput} from "../../entities/unsignedInput"
+import {TokenId} from "../../types"
+import {ChangeBox} from "./changeBox"
+import {OverallAmount} from "./overallAmount"
 
 export class BoxSelection {
   private constructor(public readonly inputs: ErgoBox[], public readonly change?: ChangeBox) {}
@@ -27,20 +27,20 @@ export class BoxSelection {
   /** Amounts of all kinds of tokens with change excluded.
    */
   get totalOutputWithoutChange(): OverallAmount {
-    let nErgsIn = this.inputs.map((bx, _i, _xs) => bx.value).reduce((x, y, _i, _xs) => x + y)
-    let nErgsChange = this.change?.value || 0n
-    let assetsChange = this.change?.assets || []
-    let nErgs = nErgsIn - nErgsChange
-    let tokensAgg = new Map<TokenId, bigint>()
-    for (let t of this.inputs.flatMap((bx, _i, _xs) => bx.assets)) {
-      let acc = tokensAgg.get(t.tokenId) || 0n
+    const nErgsIn = this.inputs.map((bx, _i, _xs) => bx.value).reduce((x, y, _i, _xs) => x + y)
+    const nErgsChange = this.change?.value || 0n
+    const assetsChange = this.change?.assets || []
+    const nErgs = nErgsIn - nErgsChange
+    const tokensAgg = new Map<TokenId, bigint>()
+    for (const t of this.inputs.flatMap((bx, _i, _xs) => bx.assets)) {
+      const acc = tokensAgg.get(t.tokenId) || 0n
       tokensAgg.set(t.tokenId, t.amount + acc)
     }
-    for (let a of assetsChange) {
-      let amountIn = tokensAgg.get(a.tokenId)
+    for (const a of assetsChange) {
+      const amountIn = tokensAgg.get(a.tokenId)
       if (amountIn) tokensAgg.set(a.tokenId, amountIn - a.amount)
     }
-    let tokens: TokenAmount[] = []
+    const tokens: TokenAmount[] = []
     tokensAgg.forEach((amount, tokenId, _xs) => tokens.push({tokenId, amount}))
     return {nErgs, assets: tokens}
   }

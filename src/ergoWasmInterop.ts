@@ -1,22 +1,22 @@
-import {BoxSelection} from "./wallet/entities/boxSelection"
-import {ErgoBox} from "./entities/ergoBox"
-import {ErgoTree, ergoTreeToBytea} from "./entities/ergoTree"
-import {TokenAmount} from "./entities/tokenAmount"
-import {ErgoBoxCandidate} from "./entities/ergoBoxCandidate"
-import {BoxId, TxId} from "./types"
-import {TxRequest} from "./wallet/entities/txRequest"
-import {NetworkContext} from "./entities/networkContext"
-import {RustModule} from "./utils/rustLoader"
 import {
-  UnsignedTransaction,
   ErgoBoxCandidates,
   Tokens,
+  UnsignedTransaction,
   BoxSelection as WasmBoxSelection,
-  ErgoBoxCandidate as WasmErgoBoxCandidate,
   ErgoBox as WasmErgoBox,
+  ErgoBoxCandidate as WasmErgoBoxCandidate,
   ErgoTree as WasmErgoTree,
   Token as WasmToken
 } from "ergo-lib-wasm-browser"
+import {ErgoBox} from "./entities/ergoBox"
+import {ErgoBoxCandidate} from "./entities/ergoBoxCandidate"
+import {ErgoTree, ergoTreeToBytea} from "./entities/ergoTree"
+import {NetworkContext} from "./entities/networkContext"
+import {TokenAmount} from "./entities/tokenAmount"
+import {BoxId, TxId} from "./types"
+import {RustModule} from "./utils/rustLoader"
+import {BoxSelection} from "./wallet/entities/boxSelection"
+import {TxRequest} from "./wallet/entities/txRequest"
 
 export function txRequestToWasmTransaction(req: TxRequest, ctx: NetworkContext): UnsignedTransaction {
   const inputs = boxSelectionToWasm(req.inputs)
