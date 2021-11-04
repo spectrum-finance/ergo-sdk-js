@@ -1,6 +1,18 @@
-import {BoxId, ErgoBox, HexString, Input, Registers, SigmaType, TokenId, TxId} from "../"
+import {
+  AssetAmount,
+  BoxId,
+  ErgoBox,
+  HexString,
+  Input,
+  Registers,
+  SigmaType,
+  TokenAmount,
+  TokenId,
+  TxId
+} from "../"
 import {parseRegisterId} from "../entities/registers"
 import {DataInput} from "../entities/dataInput"
+import {Balance} from "../wallet/entities/balance";
 
 export type Items<T> = {
   items: T[]
@@ -36,18 +48,36 @@ export function explorerToInput(ein: ExplorerInput): AugInput {
   }
 }
 
-export type ExplorerErgoBalance = {
-  readonly nErgs: bigint
-  readonly tokens: BoxAsset[]
+export type ExplorerTokenBalance = {
+  tokenId: TokenId,
+  amount: bigint,
+  decimals: number,
+  name?: string
 }
 
-export type AugErgoBalance = {
-  readonly nErgs: bigint
-  readonly tokens: BoxAsset[]
+export function fixExplorerTokenBalance(b: ExplorerTokenBalance): ExplorerTokenBalance {
+  return {...b, amount: BigInt(b.amount)}
 }
 
-export function explorerToErgoBalance(balance: ExplorerErgoBalance): AugErgoBalance {
-  return {...balance}
+export function explorerTokenBalanceToTokenAmount(b: ExplorerTokenBalance): TokenAmount {
+  return {tokenId: b.tokenId, amount: b.amount, name: b.name, decimals: b.decimals}
+}
+
+export type ExplorerBalance = {
+  readonly nanoErgs: bigint
+  readonly tokens: ExplorerTokenBalance[]
+}
+
+export function fixExplorerBalance(b: ExplorerBalance): ExplorerBalance {
+  return {nanoErgs: BigInt(b.nanoErgs), tokens: b.tokens.map(t => fixExplorerTokenBalance(t))}
+}
+
+export function explorerBalanceToWallet(b: ExplorerBalance): Balance {
+  const fixed = fixExplorerBalance(b)
+  return new Balance(
+    fixed.nanoErgs,
+    new Map(fixed.tokens.map(t => [t.tokenId, AssetAmount.fromToken(explorerTokenBalanceToTokenAmount(t))]))
+  )
 }
 
 export type ExplorerErgoTx = {
@@ -95,6 +125,10 @@ export type BoxAsset = {
   decimals?: number
 }
 
+export function fixBoxAsset(asset: BoxAsset): BoxAsset {
+  return {...asset, amount: BigInt(asset.amount)}
+}
+
 export type BoxRegister = {
   serializedValue: string
   sigmaType: SigmaType
@@ -125,7 +159,7 @@ export function explorerToErgoBox(box: ExplorerErgoBox): AugErgoBox {
     address: box.address,
     creationHeight: box.creationHeight,
     value: BigInt(box.value), // fix possibly `number` fields to `bigint` only.
-    assets: box.assets.map(a => ({...a, amount: BigInt(a.amount)})),
+    assets: box.assets.map(a => fixBoxAsset(a)),
     additionalRegisters: registers,
     spentTransactionId: box.spentTransactionId
   }
