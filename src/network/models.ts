@@ -12,7 +12,7 @@ import {
 } from "../"
 import {parseRegisterId} from "../entities/registers"
 import {DataInput} from "../entities/dataInput"
-import {Balance} from "../wallet/entities/balance";
+import {Balance} from "../wallet/entities/balance"
 
 export type Items<T> = {
   items: T[]
@@ -49,9 +49,9 @@ export function explorerToInput(ein: ExplorerInput): AugInput {
 }
 
 export type ExplorerTokenBalance = {
-  tokenId: TokenId,
-  amount: bigint,
-  decimals: number,
+  tokenId: TokenId
+  amount: bigint
+  decimals: number
   name?: string
 }
 
@@ -85,6 +85,9 @@ export type ExplorerErgoTx = {
   readonly inputs: ExplorerInput[]
   readonly dataInputs: DataInput[]
   readonly outputs: ExplorerErgoBox[]
+  readonly timestamp: bigint
+  readonly inclusionHeight: number
+  readonly numConfirmations: number
   readonly size: number
 }
 
@@ -93,6 +96,8 @@ export type AugErgoTx = {
   readonly inputs: AugInput[]
   readonly dataInputs: DataInput[]
   readonly outputs: AugErgoBox[]
+  readonly timestamp: bigint
+  readonly inclusionHeight: number
   readonly size: number
 }
 
@@ -100,7 +105,8 @@ export function explorerToErgoTx(etx: ExplorerErgoTx): AugErgoTx {
   return {
     ...etx,
     inputs: etx.inputs.map(i => explorerToInput(i)),
-    outputs: etx.outputs.map(o => explorerToErgoBox(o))
+    outputs: etx.outputs.map(o => explorerToErgoBox(o)),
+    timestamp: BigInt(etx.timestamp)
   }
 }
 

@@ -13,12 +13,14 @@ import {
   explorerToErgoBox,
   explorerToErgoTx,
   fixAssetInfo,
-  AugAssetInfo, ExplorerBalance, explorerBalanceToWallet
+  AugAssetInfo,
+  ExplorerBalance,
+  explorerBalanceToWallet
 } from "./models"
 import {Sorting} from "./sorting"
 import {JSONBI} from "../utils/json"
-import {TokenSymbol} from "../types";
-import {Balance} from "../wallet/entities/balance";
+import {TokenSymbol} from "../types"
+import {Balance} from "../wallet/entities/balance"
 
 export interface ErgoNetwork {
   /** Get confirmed transaction by id.
