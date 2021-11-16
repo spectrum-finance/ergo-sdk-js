@@ -1,6 +1,6 @@
 import {Address} from "./entities/address"
 
-export const MinBoxValue = 50_000n
+export const MinBoxValue = 60_000n
 
 export const MinerAddressMainnet: Address =
   "2iHkR7CWvD1R4j1yZg5bkeDRQavjAaVPeTDFGGLZduHyfWMuYpmhHocX8GJoaieTx78FntzJbCBVL6rf96ocJoZdmWBL2fci7NqWgA" +
