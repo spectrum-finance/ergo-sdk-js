@@ -10,8 +10,8 @@ import {
   TokenId,
   TxId
 } from "../"
-import {parseRegisterId} from "../entities/registers"
 import {DataInput} from "../entities/dataInput"
+import {parseRegisterId} from "../entities/registers"
 import {Balance} from "../wallet/entities/balance"
 
 export type Items<T> = {
@@ -152,9 +152,9 @@ export type BoxAssetsSearch = {
 }
 
 export function explorerToErgoBox(box: ExplorerErgoBox): AugErgoBox {
-  let registers: Registers = {}
+  const registers: Registers = {}
   Object.entries(box.additionalRegisters).forEach(([k, v]) => {
-    let regId = parseRegisterId(k)
+    const regId = parseRegisterId(k)
     if (regId) registers[regId] = v.serializedValue
   })
   return {

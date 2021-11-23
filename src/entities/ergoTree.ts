@@ -1,5 +1,5 @@
-import {RustModule} from "../utils/rustLoader"
 import {HexString} from "../types"
+import {RustModule} from "../utils/rustLoader"
 import {Address} from "./address"
 
 export type ErgoTree = HexString
@@ -9,5 +9,5 @@ export function ergoTreeFromAddress(addr: Address): ErgoTree {
 }
 
 export function ergoTreeToBytea(ergoTree: ErgoTree): Uint8Array {
-  return RustModule.SigmaRust.ErgoTree.from_base16_bytes(ergoTree).to_bytes()
+  return RustModule.SigmaRust.ErgoTree.from_base16_bytes(ergoTree).sigma_serialize_bytes()
 }
