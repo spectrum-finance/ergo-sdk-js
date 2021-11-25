@@ -15,7 +15,7 @@ import {
   fixAssetInfo,
   AugAssetInfo,
   ExplorerBalance,
-  explorerBalanceToWallet
+  explorerBalanceToWallet, ExplorerErgoUTx, explorerUtxToErgoTx
 } from "./models"
 import {Sorting} from "./sorting"
 import {JSONBI} from "../utils/json"
@@ -138,12 +138,12 @@ export class Explorer implements ErgoNetwork {
 
   async getUTxsByAddress(address: Address, paging: Paging): Promise<[AugErgoTx[], number]> {
     return this.backend
-      .request<network.Items<ExplorerErgoTx>>({
+      .request<network.Items<ExplorerErgoUTx>>({
         url: `/api/v1/mempool/transactions/byAddress/${address}`,
         params: paging,
         transformResponse: data => JSONBI.parse(data)
       })
-      .then(res => [res.data.items.map(tx => explorerToErgoTx(tx)), res.data.total])
+      .then(res => [res.data.items.map(tx => explorerUtxToErgoTx(tx)), res.data.total])
   }
 
   async getUnspentByErgoTree(tree: ErgoTree, paging: Paging): Promise<[AugErgoBox[], number]> {
