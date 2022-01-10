@@ -91,13 +91,22 @@ export type ExplorerErgoTx = {
   readonly size: number
 }
 
+export type ExplorerErgoUTx = {
+  readonly id: TxId
+  readonly inputs: ExplorerInput[]
+  readonly dataInputs: DataInput[]
+  readonly outputs: ExplorerErgoBox[]
+  readonly creationTimestamp: bigint
+  readonly size: number
+}
+
 export type AugErgoTx = {
   readonly id: TxId
   readonly inputs: AugInput[]
   readonly dataInputs: DataInput[]
   readonly outputs: AugErgoBox[]
-  readonly timestamp: bigint
-  readonly inclusionHeight: number
+  readonly timestamp?: bigint
+  readonly inclusionHeight?: number
   readonly size: number
 }
 
@@ -107,6 +116,14 @@ export function explorerToErgoTx(etx: ExplorerErgoTx): AugErgoTx {
     inputs: etx.inputs.map(i => explorerToInput(i)),
     outputs: etx.outputs.map(o => explorerToErgoBox(o)),
     timestamp: BigInt(etx.timestamp)
+  }
+}
+
+export function explorerUtxToErgoTx(etx: ExplorerErgoUTx): AugErgoTx {
+  return {
+    ...etx,
+    inputs: etx.inputs.map(i => explorerToInput(i)),
+    outputs: etx.outputs.map(o => explorerToErgoBox(o))
   }
 }
 
