@@ -15,7 +15,9 @@ import {
   fixAssetInfo,
   AugAssetInfo,
   ExplorerBalance,
-  explorerBalanceToWallet, ExplorerErgoUTx, explorerUtxToErgoTx
+  explorerBalanceToWallet,
+  ExplorerErgoUTx,
+  explorerUtxToErgoTx
 } from "./models"
 import {Sorting} from "./sorting"
 import {JSONBI} from "../utils/json"

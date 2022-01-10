@@ -16,7 +16,8 @@ export {
   MinBoxValue,
   NativeAssetId,
   NativeAssetTicker,
-  NativeAssetDecimals
+  NativeAssetDecimals,
+  SigmaPropConstPrefixHex
 } from "./constants"
 export {Address, Network, AddressKind, kindOfAddress} from "./entities/address"
 export {AssetAmount} from "./entities/assetAmount"
@@ -55,6 +56,7 @@ export {
   Int32Constant,
   Int64Constant,
   ByteaConstant,
+  SigmaPropConstant,
   serializeConstant,
   deserializeConstant
 } from "./entities/constant"
