@@ -11,3 +11,5 @@ export const MinerAddressTestnet: Address = ""
 export const NativeAssetId = "0000000000000000000000000000000000000000000000000000000000000000"
 export const NativeAssetTicker = "ERG"
 export const NativeAssetDecimals = 9
+
+export const SigmaPropConstPrefixHex = "08cd"
