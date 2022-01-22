@@ -21,18 +21,18 @@ export class BoxSelection {
   }
 
   get unsignedInputs(): UnsignedInput[] {
-    return this.inputs.map((bx) => ({...bx, extension: {}}))
+    return this.inputs.map(bx => ({...bx, extension: {}}))
   }
 
   /** Amounts of all kinds of tokens with change excluded.
    */
   get totalOutputWithoutChange(): OverallAmount {
-    const nErgsIn = this.inputs.map((bx) => bx.value).reduce((x, y) => x + y)
+    const nErgsIn = this.inputs.map(bx => bx.value).reduce((x, y) => x + y)
     const nErgsChange = this.change?.value || 0n
     const assetsChange = this.change?.assets || []
     const nErgs = nErgsIn - nErgsChange
     const tokensAgg = new Map<TokenId, bigint>()
-    for (const t of this.inputs.flatMap((bx) => bx.assets)) {
+    for (const t of this.inputs.flatMap(bx => bx.assets)) {
       const acc = tokensAgg.get(t.tokenId) || 0n
       tokensAgg.set(t.tokenId, t.amount + acc)
     }
@@ -41,7 +41,7 @@ export class BoxSelection {
       if (amountIn) tokensAgg.set(a.tokenId, amountIn - a.amount)
     }
     const tokens: TokenAmount[] = []
-    tokensAgg.forEach((amount, tokenId) => amount > 0 ?? tokens.push({tokenId, amount}))
+    tokensAgg.forEach((amount, tokenId) => (amount > 0 ? tokens.push({tokenId, amount}) : undefined))
     return {nErgs, assets: tokens}
   }
 
