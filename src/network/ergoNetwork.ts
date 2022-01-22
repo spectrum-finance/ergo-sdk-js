@@ -256,7 +256,7 @@ export class Explorer implements ErgoNetwork {
   async getNetworkContext(): Promise<NetworkContext> {
     return this.backend
       .request<NetworkContext>({
-        url: `/api/v1/epochs/params`
+        url: `/api/v1/info`
       })
       .then(res => res.data)
   }
