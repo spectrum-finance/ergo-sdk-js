@@ -1,9 +1,8 @@
-import {HexString} from "../types"
 import {Constant as WasmConstant} from "ergo-lib-wasm-browser"
+import {SigmaPropConstPrefixHex} from "../constants"
+import {HexString} from "../types"
 import {RustModule} from "../utils/rustLoader"
 import {PublicKey} from "./publicKey"
-import {SigmaPropConstPrefixHex} from "../constants"
-import {toHex} from "../utils/hex"
 
 export class Int32Constant {
   constructor(public readonly value: number) {}
@@ -42,13 +41,13 @@ export function deserializeConstant(r: HexString): Constant | undefined {
     try {
       return new Int64Constant(BigInt(constant.to_i64().to_str()))
     } catch (e) {
-      try {
-        return new ByteaConstant(constant.to_byte_array())
-      } catch (e) {
+      const hex = constant.encode_to_base16()
+      const prefix = hex.slice(0, SigmaPropConstPrefixHex.length)
+      if (prefix === SigmaPropConstPrefixHex) {
+        return new SigmaPropConstant(hex.slice(SigmaPropConstPrefixHex.length))
+      } else {
         try {
-          return new SigmaPropConstant(
-            toHex(constant.to_byte_array().slice(SigmaPropConstPrefixHex.length - 1))
-          )
+          return new ByteaConstant(constant.to_byte_array())
         } catch (e) {
           return undefined
         }
