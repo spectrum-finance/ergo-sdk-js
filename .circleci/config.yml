@@ -1,0 +1,35 @@
+version: 2.1
+jobs:
+  test-and-lint:
+    docker: 
+      - image: circleci/node:14-bullseye-browsers
+    steps:
+      - checkout
+      - run:
+          name: Run Eslint
+          command: yarn fix:lint
+      - run: 
+          name: Run Tests
+          command: yarn test --passWithNoTests
+  deploy: 
+    docker: 
+      - image: circleci/node:14-bullseye-browsers
+    steps:
+      - checkout
+      - run:
+          name: Auth
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+      - run:
+          name: Publish
+          command: npm publish --access=public
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - test-and-lint
+      - deploy:
+          filters:
+            tags: 
+              only: /^\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
