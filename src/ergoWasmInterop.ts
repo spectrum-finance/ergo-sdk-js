@@ -15,8 +15,12 @@ import {
   ErgoBoxCandidate as WasmErgoBoxCandidate,
   ErgoBox as WasmErgoBox,
   ErgoTree as WasmErgoTree,
-  Token as WasmToken
+  Token as WasmToken,
+  ErgoStateContext,
+  PreHeader,
+  ReducedTransaction
 } from "ergo-lib-wasm-browser"
+import {BlockHeader} from "./entities/blockHeader"
 
 export function txRequestToWasmTransaction(req: TxRequest, ctx: NetworkContext): UnsignedTransaction {
   const inputs = boxSelectionToWasm(req.inputs)
@@ -27,6 +31,28 @@ export function txRequestToWasmTransaction(req: TxRequest, ctx: NetworkContext):
   const minValue = RustModule.SigmaRust.BoxValue.SAFE_USER_MIN()
   const txb = RustModule.SigmaRust.TxBuilder.new(inputs, outputs, ctx.height, fee, changeAddr, minValue)
   return txb.build()
+}
+
+export function blockHeadersToErgoStateContext(blockHeaders: BlockHeader[]): ErgoStateContext {
+  const block_headers = RustModule.SigmaRust.BlockHeaders.from_json(blockHeaders.slice(0, 10))
+  const pre_header = PreHeader.from_block_header(block_headers.get(0))
+  return new RustModule.SigmaRust.ErgoStateContext(pre_header, block_headers)
+}
+
+export function txRequestToWasmReducedTx(
+  req: TxRequest,
+  ergoStateCtx: ErgoStateContext,
+  ctx: NetworkContext
+): ReducedTransaction {
+  const unsignedTx = txRequestToWasmTransaction(req, ctx)
+  const unspent_boxes = RustModule.SigmaRust.ErgoBoxes.from_boxes_json(req.inputs.inputs)
+  const tx_data_inputs = RustModule.SigmaRust.ErgoBoxes.from_boxes_json(req.dataInputs)
+  return RustModule.SigmaRust.ReducedTransaction.from_unsigned_tx(
+    unsignedTx,
+    unspent_boxes,
+    tx_data_inputs,
+    ergoStateCtx
+  )
 }
 
 export function boxSelectionToWasm(inputs: BoxSelection): WasmBoxSelection {

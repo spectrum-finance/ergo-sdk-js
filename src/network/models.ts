@@ -10,6 +10,8 @@ import {
   TokenId,
   TxId
 } from "../"
+import {BlockHeader} from "../entities/blockHeader"
+import {BlockSummary} from "../entities/blockSummary"
 import {DataInput} from "../entities/dataInput"
 import {parseRegisterId} from "../entities/registers"
 import {Balance} from "../wallet/entities/balance"
@@ -78,6 +80,88 @@ export function explorerBalanceToWallet(b: ExplorerBalance): Balance {
     fixed.nanoErgs,
     new Map(fixed.tokens.map(t => [t.tokenId, AssetAmount.fromToken(explorerTokenBalanceToTokenAmount(t))]))
   )
+}
+
+export type ExplorerUnspentErgoBox = {
+  id: string
+  txId: string
+  mainChain: boolean
+  value: bigint
+  index: number
+  creationHeight: number
+  ergoTree: string
+  address: string
+  assets: BoxAsset[]
+  additionalRegisters: {[key: string]: BoxRegister}
+  spentTransactionId?: string | null
+}
+
+// const errr = {"id":"962b8bb807115545482f8af97ba34e89bbc970b7978699ababb3a1650d94688a","height":673747,"epoch":657,"version":2,"timestamp":1643366279734,"transactionsCount":5,"miner":{"address":"88dhgzEuTXaRxf1rbqBRZ6Zbw9iigdB4PCdjyFKLrk22gnmjKcxZBe53vqJVetRa4tTNF9oowQWPp2c6","name":"wQWPp2c6"},"size":27215,"difficulty":1859476026032128,"minerReward":66000000000}
+// https://api.ergoplatform.com/api/v1/blocks
+export type ExplorerBlockSummary = {
+  id: string
+  height: number
+  epoch: number
+  version: number
+  timestamp: bigint
+  transactionsCount: number
+  miner: {
+    address: string
+    name: string
+  }
+  size: number
+  difficulty: bigint
+}
+
+export function explorerBlockSummaryToBlockSummary(summary: ExplorerBlockSummary): BlockSummary {
+  return {
+    ...summary
+  }
+}
+
+export function explorerBlockSummariesToBlockSummaries(
+  summaryItems: Items<ExplorerBlockSummary>
+): BlockSummary[] {
+  return summaryItems.items.map(explorerBlockSummaryToBlockSummary)
+}
+
+export type ExplorerBlockHeader = {
+  timestamp: bigint
+  height: number
+  nBits: number
+  version: number
+  epoch: number
+  difficulty: bigint
+  size: number
+  votes: number[]
+  extensionId: string
+  stateRoot: string
+  id: string
+  adProofsRoot: string
+  transactionsRoot: string
+  extensionHash: string
+  powSolutions: {
+    pk: string
+    w: string
+    n: string
+    d: string
+  }
+  adProofsId: string
+  transactionsId: string
+  parentId: string
+}
+
+export function explorerBlockHeaderToBlockHeader(blockHeader: ExplorerBlockHeader): BlockHeader {
+  return {
+    ...blockHeader,
+    difficulty: blockHeader.difficulty.toString(),
+    votes: blockHeader.votes.map(voteByte => voteByte.toString(16).padStart(2, "0")).join(""),
+    size: blockHeader.size.toString(),
+    powSolutions: {
+      ...blockHeader.powSolutions,
+      d: parseInt(blockHeader.powSolutions.d, 10)
+    }
+  }
 }
 
 export type ExplorerErgoTx = {

@@ -17,12 +17,17 @@ import {
   ExplorerBalance,
   explorerBalanceToWallet,
   ExplorerErgoUTx,
-  explorerUtxToErgoTx
+  explorerUtxToErgoTx,
+  ExplorerBlockHeader,
+  explorerBlockSummariesToBlockSummaries,
+  ExplorerBlockSummary,
+  Items
 } from "./models"
 import {Sorting} from "./sorting"
 import {JSONBI} from "../utils/json"
 import {TokenSymbol} from "../types"
 import {Balance} from "../wallet/entities/balance"
+import {BlockHeader} from "../entities/blockHeader"
 
 export interface ErgoNetwork {
   /** Get confirmed transaction by id.
@@ -119,6 +124,28 @@ export class Explorer implements ErgoNetwork {
       .then(res => explorerToErgoBox(res.data))
   }
 
+  async getBlockHeaderByHeaderId(headerId: string): Promise<BlockHeader | undefined> {
+    return await this.backend
+      .request<ExplorerBlockHeader>({
+        url: `/api/v1/blocks/${headerId}`,
+        transformResponse: data => JSONBI.parse(data)
+      })
+      .then(res => network.explorerBlockHeaderToBlockHeader(res.data))
+  }
+
+  async getBlockHeaders(): Promise<Array<BlockHeader | undefined>> {
+    const blockSummaries = await this.backend
+      .request<Items<ExplorerBlockSummary>>({
+        url: `/api/v1/blocks`,
+        transformResponse: data => JSONBI.parse(data)
+      })
+      .then(res => explorerBlockSummariesToBlockSummaries(res.data))
+
+    if (!blockSummaries) return []
+
+    return Promise.all(blockSummaries.map(({id}) => this.getBlockHeaderByHeaderId(id)))
+  }
+
   async getBalanceByAddress(address: Address): Promise<Balance | undefined> {
     return this.backend
       .request<ExplorerBalance>({
@@ -136,6 +163,16 @@ export class Explorer implements ErgoNetwork {
         transformResponse: data => JSONBI.parse(data)
       })
       .then(res => [res.data.items.map(tx => explorerToErgoTx(tx)), res.data.total])
+  }
+
+  async getUnspentBoxesByAddress(address: Address, paging: Paging): Promise<AugErgoBox[]> {
+    return this.backend
+      .request<network.Items<network.ExplorerErgoBox>>({
+        url: `/api/v1/boxes/unspent/byAddress/${address}`,
+        params: paging,
+        transformResponse: data => JSONBI.parse(data)
+      })
+      .then(res => res.data.items.map(b => network.explorerToErgoBox(b)))
   }
 
   async getUTxsByAddress(address: Address, paging: Paging): Promise<[AugErgoTx[], number]> {
