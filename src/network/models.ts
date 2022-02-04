@@ -158,9 +158,15 @@ export type BoxRegister = {
   renderedValue: string
 }
 
+export type RenderedRegisters = {[key: string]: string}
+
+export type RenderedConstants = {[key: string]: string}
+
 export type BoxSearch = {
   ergoTreeTemplateHash: HexString
-  assets: TokenId[]
+  assets?: TokenId[]
+  registers?: RenderedRegisters
+  constants?: RenderedConstants
 }
 
 export type BoxAssetsSearch = {
