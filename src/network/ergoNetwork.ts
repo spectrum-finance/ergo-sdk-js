@@ -93,10 +93,10 @@ export interface ErgoNetwork {
 export class Explorer implements ErgoNetwork {
   readonly backend: AxiosInstance
 
-  constructor(uri: string) {
+  constructor(public readonly uri: string, public readonly requestTimeoutMillis: number = 20000) {
     this.backend = axios.create({
       baseURL: uri,
-      timeout: 5000,
+      timeout: requestTimeoutMillis,
       headers: {"Content-Type": "application/json"}
     })
   }
