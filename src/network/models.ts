@@ -1,5 +1,6 @@
 import {
-  AssetAmount, BlockHeader,
+  AssetAmount,
+  BlockHeader,
   BoxId,
   ErgoBox,
   HexString,

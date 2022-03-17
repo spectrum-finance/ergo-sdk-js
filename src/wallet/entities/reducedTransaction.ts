@@ -20,11 +20,6 @@ export function reduceTx(
   const unsignedTx = txRequestToWasmTransaction(txr, ctx)
   const inputs = wasm.ErgoBoxes.from_boxes_json(txr.inputs.inputs)
   const dataInputs = wasm.ErgoBoxes.from_boxes_json(txr.dataInputs)
-  const rtx = wasm.ReducedTransaction.from_unsigned_tx(
-    unsignedTx,
-    inputs,
-    dataInputs,
-    ergoCtx
-  )
+  const rtx = wasm.ReducedTransaction.from_unsigned_tx(unsignedTx, inputs, dataInputs, ergoCtx)
   return toHex(rtx.sigma_serialize_bytes())
 }
