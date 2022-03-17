@@ -44,11 +44,12 @@
     "blakejs": "^1.1.0",
     "bs58": "^4.0.1",
     "crypto-js": "^4.0.0",
-    "ergo-lib-wasm-browser": "0.14.0",
-    "ergo-lib-wasm-nodejs": "0.14.0",
+    "ergo-lib-wasm-browser": "0.15.0",
+    "ergo-lib-wasm-nodejs": "0.15.0",
     "json-bigint": "^1.0.0",
     "mathjs": "^9.4.4",
-    "ramda": "0.27.1"
+    "ramda": "0.27.1",
+    "esm-wallaby": "^3.2.25"
   },
   "devDependencies": {
     "@ava/babel": "^2.0.0",
@@ -102,7 +103,7 @@
       }
     },
     "require": [
-      "esm",
+      "esm-wallaby",
       "@babel/polyfill"
     ],
     "babel": true

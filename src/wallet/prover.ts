@@ -1,6 +1,6 @@
-import {UnsignedErgoTx} from "../entities/unsignedErgoTx"
 import {ErgoTx} from "../entities/ergoTx"
 import {Input} from "../entities/input"
+import {UnsignedErgoTx} from "../entities/unsignedErgoTx"
 
 export interface Prover {
   /** Sign the given transaction.

@@ -8,6 +8,7 @@ export {TransactionContext, MinTransactionContext} from "./wallet/entities/trans
 export {ChangeBox} from "./wallet/entities/changeBox"
 export {OverallAmount} from "./wallet/entities/overallAmount"
 export {TxRequest} from "./wallet/entities/txRequest"
+export {ReducedTransaction, reduceTx} from "./wallet/entities/reducedTransaction"
 
 export * as wasmInterop from "./ergoWasmInterop"
 export {
@@ -51,6 +52,7 @@ export {PublicKey, publicKeyFromAddress} from "./entities/publicKey"
 export {RegisterId, parseRegisterId, Registers, EmptyRegisters, registers} from "./entities/registers"
 export {SigmaType} from "./entities/sigmaType"
 export {TokenAmount, TokenAmountProxy, tokenAmountToProxy, tokenAmountFromProxy} from "./entities/tokenAmount"
+export {BlockHeader, BlockPowSolutions} from "./entities/blockHeader"
 export {
   Constant,
   Int32Constant,
