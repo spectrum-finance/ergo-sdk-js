@@ -268,7 +268,7 @@ export class Explorer implements ErgoNetwork {
   async getBlockHeaders(paging: Paging, sort?: Sorting): Promise<[BlockHeader[], number]> {
     return this.backend
       .request<network.Items<network.ExplorerBlockHeader>>({
-        url: `/api/v1/block/headers`,
+        url: `/api/v1/blocks/headers`,
         params: {...paging, sortDirection: sort || "asc"},
         transformResponse: data => JSONBI.parse(data)
       })
