@@ -1,5 +1,6 @@
 import {
   AssetAmount,
+  BlockHeader,
   BoxId,
   ErgoBox,
   HexString,
@@ -191,5 +192,34 @@ export function explorerToErgoBox(box: ExplorerErgoBox): AugErgoBox {
     assets: box.assets.map(a => fixBoxAsset(a)),
     additionalRegisters: registers,
     spentTransactionId: box.spentTransactionId
+  }
+}
+
+export type ExplorerBlockHeader = {
+  id: string
+  parentId: string
+  version: number
+  adProofsRoot: string
+  stateRoot: string
+  transactionsRoot: string
+  timestamp: string
+  nBits: string
+  height: number
+  extensionHash: string
+  votes: string
+  powSolutions: {
+    pk: string
+    w: string
+    n: string
+    d: string
+  }
+}
+
+export function explorerToBlockHeader(ebh: ExplorerBlockHeader): BlockHeader {
+  return {
+    ...ebh,
+    timestamp: BigInt(ebh.timestamp),
+    nBits: BigInt(ebh.nBits),
+    powSolutions: {...ebh.powSolutions, d: BigInt(ebh.powSolutions.d)}
   }
 }

@@ -1,28 +1,28 @@
 import axios, {AxiosInstance} from "axios"
-import {ErgoTree, HexString, TokenId, TxId, BoxId, Address} from "../"
-import * as network from "../network/models"
-import {Paging} from "./paging"
+import {Address, BlockHeader, BoxId, ErgoTree, HexString, TokenId, TxId} from "../"
 import {NetworkContext} from "../entities/networkContext"
+import * as network from "../network/models"
+import {TokenSymbol} from "../types"
+import {JSONBI} from "../utils/json"
+import {Balance} from "../wallet/entities/balance"
 import {
+  AugAssetInfo,
   AugErgoBox,
   AugErgoTx,
   BoxAssetsSearch,
   BoxSearch,
-  ExplorerErgoBox,
-  ExplorerErgoTx,
-  explorerToErgoBox,
-  explorerToErgoTx,
-  fixAssetInfo,
-  AugAssetInfo,
   ExplorerBalance,
   explorerBalanceToWallet,
+  ExplorerErgoBox,
+  ExplorerErgoTx,
   ExplorerErgoUTx,
-  explorerUtxToErgoTx
+  explorerToErgoBox,
+  explorerToErgoTx,
+  explorerUtxToErgoTx,
+  fixAssetInfo
 } from "./models"
+import {Paging} from "./paging"
 import {Sorting} from "./sorting"
-import {JSONBI} from "../utils/json"
-import {TokenSymbol} from "../types"
-import {Balance} from "../wallet/entities/balance"
 
 export interface ErgoNetwork {
   /** Get confirmed transaction by id.
@@ -88,6 +88,10 @@ export interface ErgoNetwork {
   /** Get current network context.
    */
   getNetworkContext(): Promise<NetworkContext>
+
+  /** Get block headers.
+   */
+  getBlockHeaders(paging: Paging, sort?: Sorting): Promise<[BlockHeader[], number]>
 }
 
 export class Explorer implements ErgoNetwork {
@@ -259,5 +263,15 @@ export class Explorer implements ErgoNetwork {
         url: `/api/v1/info`
       })
       .then(res => res.data)
+  }
+
+  async getBlockHeaders(paging: Paging, sort?: Sorting): Promise<[BlockHeader[], number]> {
+    return this.backend
+      .request<network.Items<network.ExplorerBlockHeader>>({
+        url: `/api/v1/blocks/headers`,
+        params: {...paging, sortDirection: sort || "asc"},
+        transformResponse: data => JSONBI.parse(data)
+      })
+      .then(res => [res.data.items.map(b => network.explorerToBlockHeader(b)), res.data.total])
   }
 }

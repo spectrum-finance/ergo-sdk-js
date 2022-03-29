@@ -1,6 +1,6 @@
-import {Prover} from "./prover"
-import {Balance} from "./entities/balance"
 import {Address} from "../entities/address"
+import {Balance} from "./entities/balance"
+import {Prover} from "./prover"
 
 export interface Wallet extends Prover {
   /** Get total ergo balance.

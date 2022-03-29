@@ -1,8 +1,8 @@
 import {BoxId, TxId} from "../types"
 import {ContextExtension} from "./contextExtension"
 import {ErgoTree} from "./ergoTree"
-import {TokenAmount, tokenAmountFromProxy, TokenAmountProxy, tokenAmountToProxy} from "./tokenAmount"
 import {Registers} from "./registers"
+import {TokenAmount, tokenAmountFromProxy, TokenAmountProxy, tokenAmountToProxy} from "./tokenAmount"
 
 export type UnsignedInput = {
   readonly boxId: BoxId
