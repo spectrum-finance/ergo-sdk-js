@@ -5,12 +5,15 @@ jobs:
       - image: circleci/node:14-bullseye-browsers
     steps:
       - checkout
+      - run: 
+          name: Install deps
+          command: npm install
       - run:
           name: Run Eslint
-          command: yarn fix:lint
+          command: npm run fix:lint
       - run: 
           name: Run Tests
-          command: yarn test --passWithNoTests
+          command: npm run test --passWithNoTests
   deploy: 
     docker: 
       - image: circleci/node:14-bullseye-browsers
