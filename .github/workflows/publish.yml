@@ -2,7 +2,7 @@ name: Publish packages to NPM
 on:
   push:
     tags:
-      - '[0-9].[0-9].[0-9]'
+      - '[0-9]+.[0-9]+.[0-9]+'
 jobs:
   publish:
     name: Publish package. 
@@ -20,4 +20,4 @@ jobs:
       - run: npm run build --scripts-prepend-node-path=auto
       - run: npm publish --access=public
         env: 
-          NODE_AUTH_TOKEN: ${{NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
