@@ -2,7 +2,8 @@ import {AssetInfo, NativeAssetInfo} from "./assetInfo"
 import {TokenAmount} from "./tokenAmount"
 
 export class AssetAmount {
-  constructor(public readonly asset: AssetInfo, public readonly amount: bigint) {}
+  constructor(public readonly asset: AssetInfo, public readonly amount: bigint) {
+  }
 
   static fromToken(token: TokenAmount): AssetAmount {
     return new this(
@@ -21,5 +22,9 @@ export class AssetAmount {
 
   withAmount(amount: bigint): AssetAmount {
     return new AssetAmount(this.asset, amount)
+  }
+
+  toToken(): TokenAmount {
+    return {tokenId: this.asset.id, amount: this.amount}
   }
 }
