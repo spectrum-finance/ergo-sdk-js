@@ -32,6 +32,8 @@ export type Registers = {[key: string]: HexString}
 
 export const EmptyRegisters: Readonly<Registers> = {}
 
+export const AdditionalRegisters = [4, 5, 6, 7, 8, 9]
+
 export function registers(regs: [RegisterId, Constant][]): Registers {
   const acc: Registers = {}
   for (const [id, value] of regs) acc[id] = serializeConstant(value)

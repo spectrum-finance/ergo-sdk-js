@@ -8,7 +8,7 @@ export {BoxSelection} from "./wallet/entities/boxSelection"
 export {TransactionContext, MinTransactionContext} from "./wallet/entities/transactionContext"
 export {ChangeBox} from "./wallet/entities/changeBox"
 export {OverallAmount} from "./wallet/entities/overallAmount"
-export {TxRequest} from "./wallet/entities/txRequest"
+export {TxRequest, extractOutputsFromTxRequest} from "./wallet/entities/txRequest"
 export {ReducedTransaction, reduceTx} from "./wallet/entities/reducedTransaction"
 
 export * as wasmInterop from "./ergoWasmInterop"
