@@ -16,6 +16,7 @@ import {ErgoBoxCandidate} from "./entities/ergoBoxCandidate"
 import {BoxId, TxId} from "./types"
 import {TxRequest} from "./wallet/entities/txRequest"
 import {NetworkContext} from "./entities/networkContext"
+import {AdditionalRegisters, Registers} from "./entities/registers"
 import {RustModule} from "./utils/rustLoader"
 
 export function txRequestToWasmTransaction(req: TxRequest, ctx: NetworkContext): UnsignedTransaction {
@@ -27,6 +28,25 @@ export function txRequestToWasmTransaction(req: TxRequest, ctx: NetworkContext):
   const minValue = RustModule.SigmaRust.BoxValue.SAFE_USER_MIN()
   const txb = RustModule.SigmaRust.TxBuilder.new(inputs, outputs, ctx.height, fee, changeAddr, minValue)
   return txb.build()
+}
+
+export function ergoBoxesFromWasmUtx(wutx: UnsignedTransaction): ErgoBox[] {
+  const mockTx = RustModule.SigmaRust.Transaction.from_unsigned_tx(wutx, [])
+  const outputs = []
+  for (let i = 0; i < mockTx.outputs().len(); i++) {
+    const box = mockTx.outputs().get(i)
+    outputs.push({
+      boxId: box.box_id().to_str(),
+      transactionId: wutx.id().to_str(),
+      index: i,
+      ergoTree: box.ergo_tree().to_base16_bytes(),
+      creationHeight: box.creation_height(),
+      value: BigInt(box.value().as_i64().to_str()),
+      assets: tokensFromWasm(box.tokens()),
+      additionalRegisters: registersFromWasm(box)
+    })
+  }
+  return outputs
 }
 
 export function boxSelectionToWasm(inputs: BoxSelection): WasmBoxSelection {
@@ -126,4 +146,27 @@ export function tokensToWasm(tokens: TokenAmount[]): Tokens {
   const bf = new RustModule.SigmaRust.Tokens()
   for (const t of tokens) bf.add(tokenToWasm(t))
   return bf
+}
+
+export function tokensFromWasm(wtokens: Tokens): TokenAmount[] {
+  const tokens = []
+  for (let i = 0; i < wtokens.len(); i++) {
+    const t = wtokens.get(i)
+    tokens.push({
+      tokenId: t.id().to_str(),
+      amount: BigInt(t.amount().as_i64().to_str())
+    })
+  }
+  return tokens
+}
+
+export function registersFromWasm(wbox: WasmErgoBox | WasmErgoBoxCandidate): Registers {
+  const regs: Registers = {}
+  for (const rix of AdditionalRegisters) {
+    const rval = wbox.register_value(rix)
+    if (rval) {
+      regs[`R${rix}`] = rval.encode_to_base16()
+    }
+  }
+  return regs
 }
