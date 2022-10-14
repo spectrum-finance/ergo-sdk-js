@@ -5,7 +5,7 @@ class Module {
 
   async load(node: boolean = false): Promise<SigmaRust> {
     if (this._ergo === undefined) {
-      this._ergo = await (node ? import("ergo-lib-wasm-nodejs") : import("ergo-lib-wasm-browser")) as any
+      this._ergo = (await (node ? import("ergo-lib-wasm-nodejs") : import("ergo-lib-wasm-browser"))) as any
     }
     return this._ergo!
   }
