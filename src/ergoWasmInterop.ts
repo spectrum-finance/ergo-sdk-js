@@ -30,13 +30,15 @@ export function txRequestToWasmTransaction(req: TxRequest, ctx: NetworkContext):
 }
 
 export function ergoBoxesFromWasmUtx(wutx: UnsignedTransaction): ErgoBox[] {
-  const mockTx = RustModule.SigmaRust.Transaction.from_unsigned_tx(wutx, Array(wutx.inputs().len()).fill([]))
+  const mackTxInputs = Array(wutx.inputs().len()).fill([]);
+  const unsignedTxId = wutx.id().to_str();
+  const mockTx = RustModule.SigmaRust.Transaction.from_unsigned_tx(wutx, mackTxInputs)
   const outputs = []
   for (let i = 0; i < mockTx.outputs().len(); i++) {
     const box = mockTx.outputs().get(i)
     outputs.push({
       boxId: box.box_id().to_str(),
-      transactionId: wutx.id().to_str(),
+      transactionId: unsignedTxId,
       index: i,
       ergoTree: box.ergo_tree().to_base16_bytes(),
       creationHeight: box.creation_height(),
