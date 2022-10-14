@@ -24,13 +24,13 @@ export function txRequestToWasmTransaction(req: TxRequest, ctx: NetworkContext):
   const outputs = boxCandidatesToWasm(req.outputs)
   const feeAmount = req.feeNErgs || 0n
   const fee = RustModule.SigmaRust.BoxValue.from_i64(RustModule.SigmaRust.I64.from_str(feeAmount.toString()))
-  const changeAddr = RustModule.SigmaRust.Address.from_base58(req.changeAddress);
-  const txb = RustModule.SigmaRust.TxBuilder.new(inputs, outputs, ctx.height, fee, changeAddr);
+  const changeAddr = RustModule.SigmaRust.Address.from_base58(req.changeAddress)
+  const txb = RustModule.SigmaRust.TxBuilder.new(inputs, outputs, ctx.height, fee, changeAddr)
   return txb.build()
 }
 
 export function ergoBoxesFromWasmUtx(wutx: UnsignedTransaction): ErgoBox[] {
-  const mockTx = RustModule.SigmaRust.Transaction.from_unsigned_tx(wutx, [])
+  const mockTx = RustModule.SigmaRust.Transaction.from_unsigned_tx(wutx, Array(wutx.inputs().len()).fill([]))
   const outputs = []
   for (let i = 0; i < mockTx.outputs().len(); i++) {
     const box = mockTx.outputs().get(i)
