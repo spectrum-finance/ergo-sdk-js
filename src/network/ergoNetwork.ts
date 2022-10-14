@@ -1,5 +1,5 @@
 import axios, {AxiosInstance} from "axios"
-import {Address, BlockHeader, BoxId, ErgoTree, HexString, TokenId, TxId} from "../"
+import {Address, BlockHeader, BoxId, ErgoBoxProxy, ErgoTree, HexString, Registers, TokenId, TxId} from "../"
 import {NetworkContext} from "../entities/networkContext"
 import * as network from "../network/models"
 import {TokenSymbol} from "../types"
@@ -92,6 +92,14 @@ export interface ErgoNetwork {
   /** Get block headers.
    */
   getBlockHeaders(paging: Paging, sort?: Sorting): Promise<[BlockHeader[], number]>
+
+  /** Get UTXo by address
+   */
+  searchUnspentBoxesByAddress(address: Address): Promise<ErgoBoxProxy[]>;
+
+  /** Get UTXo by addresses
+   */
+  searchUnspentBoxesByAddresses(addresses: Address[]): Promise<ErgoBoxProxy[]>;
 }
 
 export class Explorer implements ErgoNetwork {
@@ -227,6 +235,41 @@ export class Explorer implements ErgoNetwork {
         transformResponse: data => JSONBI.parse(data)
       })
       .then(res => [res.data.items.map(b => network.explorerToErgoBox(b)), res.data.total])
+  }
+
+  async searchUnspentBoxesByAddress(address: Address): Promise<ErgoBoxProxy[]> {
+    return  this.backend
+      .request<network.Items<network.ExplorerErgoBox>>({
+        url: `/api/v1/boxes/unspent/byAddress/${address}`,
+        transformResponse: data => JSONBI.parse(data)
+      })
+      .then(res => res.data.items)
+      .then(items => items.map(item => ({
+        boxId: item.boxId,
+        transactionId: item.transactionId,
+        index: item.index,
+        ergoTree: item.ergoTree,
+        creationHeight: item.creationHeight,
+        value: item.value.toString(),
+        assets: item.assets.map(a => ({
+          tokenId: a.tokenId,
+          amount: a.amount.toString(),
+          name: a.name,
+          decimals: a.decimals
+        })),
+        additionalRegisters:   Object
+                                 .entries(item.additionalRegisters)
+                                 .reduce<Registers>((acc, [key, value]) => ({
+                                   ...acc,
+                                   [key]: value.serializedValue
+                                 }), {})
+      })))
+  }
+
+  async searchUnspentBoxesByAddresses(addresses: Address[]): Promise<ErgoBoxProxy[]> {
+    return Promise
+      .all(addresses.map(a => this.searchUnspentBoxesByAddress(a)))
+      .then(boxesSets => boxesSets.flatMap(bs => bs))
   }
 
   async getFullTokenInfo(tokenId: TokenId): Promise<AugAssetInfo | undefined> {
