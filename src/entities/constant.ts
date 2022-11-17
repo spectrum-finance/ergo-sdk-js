@@ -16,17 +16,22 @@ export class ByteaConstant {
   constructor(public readonly value: Uint8Array) {}
 }
 
+export class Int32ArrayConstant {
+  constructor(public readonly value: Int32Array) {}
+}
+
 export class SigmaPropConstant {
   constructor(public readonly value: PublicKey) {}
 }
 
-export type Constant = Int32Constant | Int64Constant | ByteaConstant | SigmaPropConstant
+export type Constant = Int32Constant | Int64Constant | ByteaConstant | Int32ArrayConstant | SigmaPropConstant
 
 export function serializeConstant(c: Constant): HexString {
   let constant: WasmConstant
   if (c instanceof Int32Constant) constant = RustModule.SigmaRust.Constant.from_i32(c.value)
   else if (c instanceof Int64Constant)
     constant = RustModule.SigmaRust.Constant.from_i64(RustModule.SigmaRust.I64.from_str(c.value.toString()))
+  else if (c instanceof Int32ArrayConstant) constant = RustModule.SigmaRust.Constant.from_i32_array(c.value)
   else if (c instanceof SigmaPropConstant)
     constant = RustModule.SigmaRust.Constant.decode_from_base16(SigmaPropConstPrefixHex + c.value)
   else constant = RustModule.SigmaRust.Constant.from_byte_array(c.value)
@@ -47,9 +52,13 @@ export function deserializeConstant(r: HexString): Constant | undefined {
         return new SigmaPropConstant(hex.slice(SigmaPropConstPrefixHex.length))
       } else {
         try {
-          return new ByteaConstant(constant.to_byte_array())
+          return new Int32ArrayConstant(constant.to_i32_array())
         } catch (e) {
-          return undefined
+          try {
+            return new ByteaConstant(constant.to_byte_array())
+          } catch (e) {
+            return undefined
+          }
         }
       }
     }
