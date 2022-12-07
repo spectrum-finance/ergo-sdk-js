@@ -5,5 +5,5 @@ import {OverallAmount} from "./entities/overallAmount"
 export interface InputSelector {
   /** Get inputs satisfying the specified target amount..
    */
-  select(target: OverallAmount): BoxSelection | InsufficientInputs
+  select(target: OverallAmount): Promise<BoxSelection | InsufficientInputs>
 }
