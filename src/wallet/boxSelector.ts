@@ -45,7 +45,6 @@ class DefaultBoxSelectorImpl implements BoxSelector {
           .reduce((f0, f1) => f0 && f1, true)
       if (sufficientErgs && sufficientAssets()) break
     }
-    console.log(sufficientInputs);
     const deltaNErgs = totalNErgs - target.nErgs
     const deltaAssets: TokenAmount[] = []
     for (const [id, totalAmt] of totalAssets) {
