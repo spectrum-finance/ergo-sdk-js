@@ -14,10 +14,7 @@ export interface BoxSelector {
 }
 
 class DefaultBoxSelectorImpl implements BoxSelector {
-  constructor(private minBoxValue: bigint) {
-  }
-
-  select(inputs: ErgoBox[], target: OverallAmount): BoxSelection | InsufficientInputs {
+  select(inputs: ErgoBox[], target: OverallAmount, minBoxValue: bigint = MinBoxValue): BoxSelection | InsufficientInputs {
     const sufficientInputs: ErgoBox[] = []
     let totalNErgs = 0n
     const totalAssets = new Map<TokenId, bigint>()
@@ -62,8 +59,8 @@ class DefaultBoxSelectorImpl implements BoxSelector {
     } else {
       const changeRequired = !(deltaNErgs === 0n && deltaAssets.every(a => a.amount === 0n))
 
-      if (changeRequired && deltaNErgs < this.minBoxValue) {
-        return this.select(inputs, { ...target, nErgs: target.nErgs + this.minBoxValue })
+      if (changeRequired && deltaNErgs < minBoxValue) {
+        return this.select(inputs, { ...target, nErgs: target.nErgs + minBoxValue })
       }
 
       const change = changeRequired
@@ -77,4 +74,4 @@ class DefaultBoxSelectorImpl implements BoxSelector {
   }
 }
 
-export const DefaultBoxSelector = new DefaultBoxSelectorImpl(MinBoxValue);
+export const DefaultBoxSelector = new DefaultBoxSelectorImpl();
