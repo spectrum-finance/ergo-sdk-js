@@ -70,3 +70,14 @@ test("BoxSelector: Select tokens (Use minimal boxes)", async t =>
     }),
     BoxSelection.make([boxesWithAssets[2]], {value: 200000n, assets: []})
   ))
+
+test("BoxSelector: If user has input with target value and has not empty change, selector should add Min nErg value to change", async t => {
+  console.log(
+    DefaultBoxSelector.select(boxesWithAssets, {
+      nErgs: 39999480000n,
+      assets: [{tokenId: "x", amount: 10n}]
+    })
+  )
+
+  return t.false(true)
+})

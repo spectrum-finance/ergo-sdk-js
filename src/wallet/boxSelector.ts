@@ -5,6 +5,7 @@ import {InsufficientInputs} from "../errors/insufficientInputs"
 import {TokenId} from "../types"
 import {TokenAmount} from "../entities/tokenAmount"
 import * as R from "ramda"
+import {MinBoxValue} from "../constants"
 
 export interface BoxSelector {
   /** Selects inputs to satisfy target balance and tokens.
@@ -13,6 +14,9 @@ export interface BoxSelector {
 }
 
 class DefaultBoxSelectorImpl implements BoxSelector {
+  constructor(private minBoxValue: bigint) {
+  }
+
   select(inputs: ErgoBox[], target: OverallAmount): BoxSelection | InsufficientInputs {
     const sufficientInputs: ErgoBox[] = []
     let totalNErgs = 0n
@@ -41,6 +45,7 @@ class DefaultBoxSelectorImpl implements BoxSelector {
           .reduce((f0, f1) => f0 && f1, true)
       if (sufficientErgs && sufficientAssets()) break
     }
+    console.log(sufficientInputs);
     const deltaNErgs = totalNErgs - target.nErgs
     const deltaAssets: TokenAmount[] = []
     for (const [id, totalAmt] of totalAssets) {
@@ -57,6 +62,11 @@ class DefaultBoxSelectorImpl implements BoxSelector {
       return new InsufficientInputs(`'${assetName}' required: ${requiredAmount}, given: ${givenAmount}`)
     } else {
       const changeRequired = !(deltaNErgs === 0n && deltaAssets.every(a => a.amount === 0n))
+
+      if (changeRequired && deltaNErgs < this.minBoxValue) {
+        return this.select(inputs, { ...target, nErgs: target.nErgs + this.minBoxValue })
+      }
+
       const change = changeRequired
         ? {
             value: deltaNErgs,
@@ -68,4 +78,4 @@ class DefaultBoxSelectorImpl implements BoxSelector {
   }
 }
 
-export const DefaultBoxSelector = new DefaultBoxSelectorImpl()
+export const DefaultBoxSelector = new DefaultBoxSelectorImpl(MinBoxValue);
