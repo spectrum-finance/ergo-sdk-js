@@ -60,7 +60,7 @@ class DefaultBoxSelectorImpl implements BoxSelector {
       const changeRequired = !(deltaNErgs === 0n && deltaAssets.every(a => a.amount === 0n))
 
       if (changeRequired && deltaNErgs < minBoxValue) {
-        return this.select(inputs, { ...target, nErgs: target.nErgs + minBoxValue })
+        return this.select(inputs, { ...target, nErgs: target.nErgs + minBoxValue }, minBoxValue);
       }
 
       const change = changeRequired
