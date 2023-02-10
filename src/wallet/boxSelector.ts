@@ -14,7 +14,7 @@ export interface BoxSelector {
 }
 
 class DefaultBoxSelectorImpl implements BoxSelector {
-  select(inputs: ErgoBox[], target: OverallAmount, minBoxValue: bigint = MinBoxValue): BoxSelection | InsufficientInputs {
+  select(inputs: ErgoBox[], target: OverallAmount, minBoxValue: bigint = MinBoxValue, nErgChange = 0n): BoxSelection | InsufficientInputs {
     const sufficientInputs: ErgoBox[] = []
     let totalNErgs = 0n
     const totalAssets = new Map<TokenId, bigint>()
@@ -42,7 +42,7 @@ class DefaultBoxSelectorImpl implements BoxSelector {
           .reduce((f0, f1) => f0 && f1, true)
       if (sufficientErgs && sufficientAssets()) break
     }
-    const deltaNErgs = totalNErgs - target.nErgs
+    const deltaNErgs = totalNErgs + nErgChange - target.nErgs;
     const deltaAssets: TokenAmount[] = []
     for (const [id, totalAmt] of totalAssets) {
       const targetAmt = target.assets.find(a => a.tokenId === id)?.amount || 0n
@@ -60,7 +60,7 @@ class DefaultBoxSelectorImpl implements BoxSelector {
       const changeRequired = !(deltaNErgs === 0n && deltaAssets.every(a => a.amount === 0n))
 
       if (changeRequired && deltaNErgs < minBoxValue) {
-        return this.select(inputs, { ...target, nErgs: target.nErgs + minBoxValue }, minBoxValue);
+        return this.select(inputs, { ...target, nErgs: target.nErgs + minBoxValue }, minBoxValue, nErgChange + minBoxValue);
       }
 
       const change = changeRequired
